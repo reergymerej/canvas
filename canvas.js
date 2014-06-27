@@ -37,10 +37,12 @@ var c = (function () {
     */
     var animate = function (animationFn) {
         clear();
-        if (animationFn() === false) {
-            requestAnimationFrame(function () {
-                animate(animationFn);
-            });
+        if (animationFn() !== false) {
+            setTimeout(function () {
+                requestAnimationFrame(function () {
+                    animate(animationFn);
+                });
+            }, 10);
         }
     }; 
 
@@ -78,7 +80,7 @@ var c = (function () {
         this.y = y;
     };
 
-    Actor.prototype.update = function () {};
+    Actor.prototype.onFrame = function () {};
 
     Actor.prototype.draw = function () {
         console.log('define draw method');
@@ -90,9 +92,21 @@ var c = (function () {
     };
 
     Actor.prototype.animate = function () {
-        this.update();
+        this.onFrame();
         this.move();
         this.draw();
+    };
+
+    Actor.prototype.constrain = function () {
+        // this.onFrame = function () {
+        //     if (this.x > w) {
+        //         this.x = w;
+        //         this.xSpeed *= -1;
+        //     } else if (this.x < 0) {
+        //         this.x = 0;
+        //         this.xSpeed *= -1;
+        //     }
+        // };
     };
 
     var w = function () {
