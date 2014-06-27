@@ -62,10 +62,54 @@ var c = (function () {
         }
     };
 
+    /**
+    * @class Actor
+    * @description an item that exists on a canvas
+    */
+    var Actor = function () {
+        this.x = 0;
+        this.y = 0;
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+    };
+
+    Actor.prototype.position = function (x, y) {
+        this.x = x;
+        this.y = y;
+    };
+
+    Actor.prototype.update = function () {};
+
+    Actor.prototype.draw = function () {
+        console.log('define draw method');
+    };
+
+    Actor.prototype.move = function () {
+        this.x += this.xSpeed;
+        this.y += this.ySpeed;
+    };
+
+    Actor.prototype.animate = function () {
+        this.update();
+        this.move();
+        this.draw();
+    };
+
+    var w = function () {
+        return width;
+    };
+
+    var h = function () {
+        return height;
+    };
+
     return {
         canvas: setCanvas,
         clear: clear,
         circle: circle,
-        animate: animate
+        animate: animate,
+        Actor: Actor,
+        w: w,
+        h: h
     };
 }());

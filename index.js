@@ -6,16 +6,33 @@ $(function () {
         this.radius = radius;
     };
 
-    var circle = new Circle(0, 100, 30);
+    Circle.prototype = new c.Actor();
+
+    Circle.prototype.draw = function () {
+        c.circle(this.x, this.y, this.radius);
+    };
+
+    Circle.prototype.update = function () {
+        this.xSpeed += 0.1;
+        this.radius += 1;
+
+        if (this.x > c.w()) {
+            console.log(c.w());
+            this.x = c.w();
+            this.xSpeed *= -1;
+        }
+    };
+
+    var circle = new Circle(0, 100, 10);
+    circle.xSpeed = 0.2;
+    // circle.ySpeed = 0.1;
 
     c.canvas('canvas');
 
     $('#circle').on('click', function () {
         c.animate(function () {
-            c.circle(circle.x, circle.y, circle.radius);
-            circle.x += 20;
-
-            return circle.x > 400;
+            circle.animate();
+            // return circle.x > 400;
         });
     });
 
