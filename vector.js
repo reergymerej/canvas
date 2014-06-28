@@ -41,6 +41,11 @@ var v = (function () {
         return new Vector(v1.x + v2.x, v1.y + v2.y);
     };
 
+    Vector.prototype.zero = function () {
+        this.x = 0;
+        this.y = 0;
+    };
+
 
     var v1 = new Vector(1, 3);
     var v2 = new Vector(2, 6);

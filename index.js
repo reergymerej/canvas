@@ -6,9 +6,13 @@ $(function () {
         this.position = new v.Vector(x, y);
 
         this.radius = radius;
-        this.xAcceleration = 1.1;
         this.w = this.radius * 2;
         this.h = this.radius * 2;
+
+        this.velocity = new v.Vector();
+        this.acceleration = new v.Vector();
+        this.gravity = new v.Vector(0, 0.3);
+        this.wind = new v.Vector(0.1, 0);
     };
 
     Circle.prototype = new c.Actor();
@@ -22,22 +26,43 @@ $(function () {
         });
     };
 
+    Circle.prototype.applyForces = function () {
+        this.acceleration.zero();
+        this.acceleration.add(this.wind);
+        this.acceleration.add(this.gravity);
+    };
+
     Circle.prototype.onFrame = function () {
         var w = c.w(),
             h = c.h();
 
+        this.applyForces();
         this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
 
         if (this.position.x > w || this.position.x < 0) {
             this.velocity.x *= -1;
+            if (this.position.x) {
+                this.position.x = w;
+            } else {
+                this.position.x = 0;
+            }
         }
 
         if (this.position.y > h || this.position.y < 0) {
             this.velocity.y *= -1;
+            if (this.position.y) {
+                this.position.y = h;
+            } else {
+                this.position.y = 0;
+            }
         }
 
         this.constructor.prototype.onFrame();
+    };
+
+    Circle.prototype.applyForce = function (vector) {
+        this.acceleration.add(vector);
     };
 
     Circle.prototype.onCollision = function () {
@@ -66,17 +91,19 @@ $(function () {
 
     c.canvas('canvas');
     
-    var b1 = new Circle(100, 100, 12);
-    b1.velocity = new v.Vector();
-    b1.acceleration = new v.Vector(0, 0.1);
+    var b1 = new Circle(200, 1, 12);
     b1.color = c.getRandomColor(0.5);
     c.addActor(b1);
 
-    var b2 = new Circle(200, 100, 12);
-    b2.velocity = new v.Vector();
-    b2.acceleration = new v.Vector(0.1, 0.2);
+    var b2 = new Circle(1, 1, 10);
     b2.color = c.getRandomColor(0.5);
     c.addActor(b2);
+
+    // var b2 = new Circle(200, 100, 12);
+    // b2.velocity = new v.Vector();
+    // b2.acceleration = new v.Vector(0.1, 0.2);
+    // b2.color = c.getRandomColor(0.5);
+    // c.addActor(b2);
 
     // getABunchOfBalls().forEach(function (ball) {
     //     c.addActor(ball);
