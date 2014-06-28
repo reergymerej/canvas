@@ -2,3 +2,9 @@
     border: 1px solid #333;
     display: block;
 }
+
+button {
+    position: absolute;;
+    top: 0;
+    right: 0;
+}

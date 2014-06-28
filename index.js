@@ -1,99 +1,86 @@
-/* global c */
+/* global v c */
 
 $(function () {
 
     var Circle = function (x, y, radius) {
-        this.x = x;
-        this.y = y;
+        this.position = new v.Vector(x, y);
+
         this.radius = radius;
-        this.growthRate = 1;
         this.xAcceleration = 1.1;
+        this.w = this.radius * 2;
+        this.h = this.radius * 2;
     };
 
     Circle.prototype = new c.Actor();
 
     Circle.prototype.draw = function () {
         c.circle({
-            x: this.x,
-            y: this.y,
+            x: this.position.x,
+            y: this.position.y,
             radius: this.radius,
             color: this.color
         });
-        this.w = this.radius * 2;
-        this.h = this.radius * 2;
     };
 
     Circle.prototype.onFrame = function () {
         var w = c.w(),
             h = c.h();
 
-        if (this.x > w) {
-            this.x = w;
-            this.xSpeed *= -1;
-        } else if (this.x < 0) {
-            this.x = 0;
-            this.xSpeed *= -1;
+        this.velocity.add(this.acceleration);
+        this.position.add(this.velocity);
+
+        if (this.position.x > w || this.position.x < 0) {
+            this.velocity.x *= -1;
         }
 
-        if (this.y > h) {
-            this.y = h;
-            this.ySpeed *= -1;
-        } else if (this.y < 0) {
-            this.y = 0;
-            this.ySpeed *= -1;
-        }
-
-        // this.xSpeed *= this.xAcceleration;
-        // this.radius += this.growthRate;
-
-        if (this.radius > 100 || this.radius < 5) {
-            this.growthRate *= -1;
+        if (this.position.y > h || this.position.y < 0) {
+            this.velocity.y *= -1;
         }
 
         this.constructor.prototype.onFrame();
     };
 
     Circle.prototype.onCollision = function () {
-        this.xSpeed *= 0.8; 
+        // this.xSpeed *= 0.8; 
         // this.ySpeed *= -1;
     };
 
-    var getABunchOfBalls = function () {
-        var i,
-            max = 40,
-            balls = [],
-            circle,
-            maxSpeed = 30;
+    // var getABunchOfBalls = function () {
+    //     var i,
+    //         max = 40,
+    //         balls = [],
+    //         circle,
+    //         maxSpeed = 30;
 
-        for (i = 0; i < max; i++) {
-            circle = new Circle(i * 10, i * 10, 6);
-            circle.xSpeed = Math.min((i + 1) / 10, maxSpeed);
-            circle.ySpeed = Math.min((i + 1) / 10, maxSpeed);
-            circle.color = c.getRandomColor(0.5);
+    //     for (i = 0; i < max; i++) {
+    //         circle = new Circle(i * 10, i * 10, 6);
+    //         circle.xSpeed = Math.min((i + 1) / 10, maxSpeed);
+    //         circle.ySpeed = Math.min((i + 1) / 10, maxSpeed);
+    //         circle.color = c.getRandomColor(0.5);
 
-            balls.push(circle);
-        }
+    //         balls.push(circle);
+    //     }
 
-        return balls;
-    };
+    //     return balls;
+    // };
 
     c.canvas('canvas');
     
-    // var b1 = new Circle(100, 100, 12);
-    // b1.xSpeed = 1;
-    // b1.ySpeed = 0;
-    // b1.color = c.getRandomColor(0.5);
-    // c.addActor(b1);
+    var b1 = new Circle(100, 100, 12);
+    b1.velocity = new v.Vector();
+    b1.acceleration = new v.Vector(0, 0.1);
+    b1.color = c.getRandomColor(0.5);
+    c.addActor(b1);
 
-    // var b2 = new Circle(200, 100, 12);
-    // b2.xSpeed = -1;
-    // b2.ySpeed = 0.3;
-    // b2.color = c.getRandomColor(0.5);
-    // c.addActor(b2);
+    var b2 = new Circle(200, 100, 12);
+    b2.velocity = new v.Vector();
+    b2.acceleration = new v.Vector(0.1, 0.2);
+    b2.color = c.getRandomColor(0.5);
+    c.addActor(b2);
 
-    getABunchOfBalls().forEach(function (ball) {
-        c.addActor(ball);
-    });
+    // getABunchOfBalls().forEach(function (ball) {
+    //     c.addActor(ball);
+    // });
 
     $('#circle').on('click', function () {
         var start = Date.now(),
