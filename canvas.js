@@ -1,3 +1,5 @@
+/* global v */
+
 var c = (function () {
     var canvas;
     var ctx;
@@ -137,8 +139,8 @@ var c = (function () {
 
     Actor.prototype.intersect = function (actor) {
         var intersect = false,
-            xDist = Math.abs(actor.x - this.x),
-            yDist = Math.abs(actor.y - this.y);
+            xDist = Math.abs(actor.position.x - this.position.x),
+            yDist = Math.abs(actor.position.y - this.position.y);
 
         return xDist < actor.w && xDist < this.w &&
             yDist < actor.h && yDist < this.h;
@@ -146,6 +148,23 @@ var c = (function () {
 
     Actor.prototype.onCollision = function () {
         console.log('implement me');
+    };
+
+    /**
+    * Get a normal vector from another actor.  When two actors collide, we
+    * need the surface normal to determine the reflection.
+    * @param {Actor} referenceActor the actor trying to bounce off this actor
+    * @return {Vector}
+    */
+    Actor.prototype.getSurfaceNormal = function (referenceActor) {
+        // vector from reference to this
+        var thisPosition = this.position;
+        var referencePosition = referenceActor.position;
+        var vector = new v.Vector(referencePosition.x - thisPosition.x, 
+            referencePosition.y - thisPosition.y);
+
+        vector.normalize();
+        return vector;
     };
 
     Actor.prototype.constrain = function () {

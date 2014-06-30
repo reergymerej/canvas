@@ -54,6 +54,10 @@ var v = (function () {
         this.y = 0;
     };
 
+    Vector.dotProduct = function (v1, v2) {
+        return v1.x * v2.x + v1.y * v2.y;
+    };
+
     /**
     * @description Get the reflect a vector based off a surface.
     * @name reflect
@@ -63,11 +67,26 @@ var v = (function () {
     * @return {Vector}
     */
     Vector.reflect = function (vector, surfaceNormal) {
+
+        // Basically if you have a vector v, which represents the object's velocity, and
+        // a normalized normal vector n, which is perpendicular to the surface with
+        // which the object collides, then the new velocity v' is given by the equation:
+
+        // v' = 2 * (v . n) * n - v;
+
+        // Where '*' is the scalar multiplication operator, '.' is the dot product of two vectors,
+        // and '-' is the subtraction operator for two vectors.
+        // v is reflected off of the surface, and gives a reflection vector v' 
+        // which is used as the new velocity of the object. 
+
+
         // R = V - 2N(V * N)
-        var reflection = Vector.multiply(vector, surfaceNormal);
+        // var reflection = Vector.multiply(vector, surfaceNormal);
+        var reflection = Vector.dotProduct(vector, surfaceNormal);
         var twoN = new Vector(surfaceNormal.x * 2, surfaceNormal.y * 2);
         reflection = Vector.multiply(twoN, reflection);
-        return Vector.subtract(vector, reflection);
+        // return Vector.subtract(vector, reflection);
+        return Vector.subtract(reflection, vector);
     };
 
 

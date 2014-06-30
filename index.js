@@ -1,4 +1,5 @@
-/* global v c */
+/* global c */
+/* global v */
 
 $(function () {
 
@@ -28,8 +29,8 @@ $(function () {
 
     Circle.prototype.applyForces = function () {
         this.acceleration.zero();
-        this.acceleration.add(this.wind);
-        this.acceleration.add(this.gravity);
+        // this.acceleration.add(this.wind);
+        // this.acceleration.add(this.gravity);
     };
 
     Circle.prototype.onFrame = function () {
@@ -66,56 +67,25 @@ $(function () {
     };
 
     Circle.prototype.onCollision = function () {
-        // this.xSpeed *= 0.8; 
-        // this.ySpeed *= -1;
+        var collidedWith = this.collidesWith[0];
+        var normal = collidedWith.getSurfaceNormal(this);
+        this.velocity = v.Vector.reflect(this.velocity, normal);
+        this.position.add(this.velocity);
     };
-
-    // var getABunchOfBalls = function () {
-    //     var i,
-    //         max = 40,
-    //         balls = [],
-    //         circle,
-    //         maxSpeed = 30;
-
-    //     for (i = 0; i < max; i++) {
-    //         circle = new Circle(i * 10, i * 10, 6);
-    //         circle.xSpeed = Math.min((i + 1) / 10, maxSpeed);
-    //         circle.ySpeed = Math.min((i + 1) / 10, maxSpeed);
-    //         circle.color = c.getRandomColor(0.5);
-
-    //         balls.push(circle);
-    //     }
-
-    //     return balls;
-    // };
 
     c.canvas('canvas');
     
-    var b1 = new Circle(200, 1, 12);
+    var b1 = new Circle(100, 100, 12);
     b1.color = c.getRandomColor(0.5);
+    b1.velocity = new v.Vector(1, 1);
     c.addActor(b1);
 
-    var b2 = new Circle(1, 1, 10);
+    var b2 = new Circle(170, 150, 10);
     b2.color = c.getRandomColor(0.5);
+    b2.velocity = new v.Vector(0, 0);
     c.addActor(b2);
 
-    // var b2 = new Circle(200, 100, 12);
-    // b2.velocity = new v.Vector();
-    // b2.acceleration = new v.Vector(0.1, 0.2);
-    // b2.color = c.getRandomColor(0.5);
-    // c.addActor(b2);
-
-    // getABunchOfBalls().forEach(function (ball) {
-    //     c.addActor(ball);
-    // });
-
-    $('#circle').on('click', function () {
-        var start = Date.now(),
-            runTime = 60;
-
-        c.animate(function () {
-            return Date.now() - start < runTime * 1000;
-        });
+    c.animate(function () {
+        // return Date.now() - start < runTime * 1000;
     });
-
 });
