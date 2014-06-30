@@ -9,6 +9,10 @@ var v = (function () {
         this.y += vector.y;
     };
 
+    Vector.subtract = function (v1, v2) {
+        return new Vector(v1.x - v2.x, v1.y - v2.y);
+    };
+
     Vector.prototype.divide = function (x) {
         if (x) {
             this.x /= x;
@@ -19,6 +23,10 @@ var v = (function () {
     Vector.prototype.multiply = function (x) {
         this.x *= x;
         this.y *= x;
+    };
+
+    Vector.multiply = function (v1, v2) {
+        return new Vector(v1.x * v2.x, v1.y * v2.y);
     };
 
     Vector.prototype.getMagnitude = function () {
@@ -33,7 +41,7 @@ var v = (function () {
         var m = this.getMagnitude();
         if (m > x) {
             this.normalize();
-            this.multiply(max);
+            this.multiply(x);
         }
     };
 
@@ -46,11 +54,37 @@ var v = (function () {
         this.y = 0;
     };
 
+    /**
+    * @description Get the reflect a vector based off a surface.
+    * @name reflect
+    * @param {Vector} vector
+    * @param {Vector} surfaceNormal unit normal of surface (perpendicular
+    * to surface with magnitude of 1)
+    * @return {Vector}
+    */
+    Vector.reflect = function (vector, surfaceNormal) {
+        // R = V - 2N(V * N)
+        var reflection = Vector.multiply(vector, surfaceNormal);
+        var twoN = new Vector(surfaceNormal.x * 2, surfaceNormal.y * 2);
+        reflection = Vector.multiply(twoN, reflection);
+        return Vector.subtract(vector, reflection);
+    };
 
-    var v1 = new Vector(1, 3);
-    var v2 = new Vector(2, 6);
 
-    console.log(Vector.add(v1, v2));
+    var v1 = new Vector(3, 3);
+    var normal = new Vector(-6, 0);
+
+    normal.normalize();
+
+    console.log(Vector.reflect(v1, normal));
+
+    v1 = new Vector(6, 4);
+    console.log(Vector.reflect(v1, normal));
+
+    v1 = new Vector(3, 3);
+    normal = new Vector(-1, -1);
+    normal.normalize();
+    console.log(Vector.reflect(v1, normal));
 
     return {
         Vector: Vector
